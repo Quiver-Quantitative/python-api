@@ -1,22 +1,26 @@
-from setuptools import setup
+import setuptools
 
-setup(
-    name='quiver-quant',
-    version='0.1.0',    
-    description='A package for the Quiver Quantitative alternative data API',
-    url='https://github.com/Quiver-Quantitative/python-api',
-    author='Christopher Kardatzke',
-    author_email='chris@quiverquant.com',
-    py_modules=["quiver"],
-    install_requires=['pandas',
-                      'numpy',                     
-                      ],
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
-    classifiers=[       
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+setuptools.setup(
+    name="quiverquant",
+    version="0.1.6",
+    author="Chris Kardatzke",
+    author_email="chris@quiverquant.com",
+    description="Quiver Quantitative Alternative Data",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/Quiver-Quantitative/python-api",
+    py_modules = ["quiverquant"],
+    install_requires=[
+   'pandas',
+   'requests'
+],
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
+    python_requires='>=3.6',
 )
