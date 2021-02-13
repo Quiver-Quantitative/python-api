@@ -22,6 +22,9 @@ class quiver:
         r = requests.get(url, headers=self.headers)
         j = json.loads(r.content)
         df = pd.DataFrame(j)
+        if not politician and len(ticker)>0:
+            df["Date"] = pd.to_datetime(df["Date"])
+            df = df.set_index("Date")
         return df
     
     def gov_contracts(self, ticker=""):
@@ -43,6 +46,10 @@ class quiver:
 
         r = requests.get(url, headers=self.headers)
         df = pd.DataFrame(json.loads(r.content))
+        if len(ticker) > 0:
+            # converts index of pandas dataframe to Date time index rather than a tuple
+            df["Date"] = pd.to_datetime(df["Date"])
+            df = df.set_index("Date")
         return df
         
 
@@ -58,6 +65,10 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if len(ticker) > 0:
+            # converts index of pandas dataframe to Date time index rather than a tuple
+            df["Date"] = pd.to_datetime(df["Date"])
+            df = df.set_index("Date")
         return df
     
     def wallstreetbets(self, ticker=""):
@@ -72,6 +83,10 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if len(ticker) > 0:
+            # converts index of pandas dataframe to Date time index rather than a tuple
+            df["Date"] = pd.to_datetime(df["Date"])
+            df = df.set_index("Date")
         return df 
     
 
