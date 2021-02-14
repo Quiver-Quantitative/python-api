@@ -4,14 +4,14 @@ This package allows you to access several alternative data sources which are upd
 - Corporate Lobbying
 - Government Contracts
 - Companies' Wikipedia page views
-- Discussions on Reddit's /r/WallStreetBets
+- Discussion on Reddit's /r/WallStreetBets
 
 This data can be used for backtesting and implementing trading strategies.
 
 ### Receiving API Token
 You can sign up for a Quiver API token [here](https://api.quiverquant.com). 
 
-The cost is $10/month, please [e-mail me](mailto:chris@quiverquant.com) if that is an issue and I may be able to help cover.
+The pricing starts at $10/month, please [e-mail me](mailto:chris@quiverquant.com) if that is an issue and I may be able to help cover.
 
 ## Getting Started
 #### Prerequisites
@@ -33,6 +33,9 @@ import quiverquant
 #Replace <TOKEN> with your token
 quiver = quiverquant.quiver("<TOKEN>")
 
+#Get data on WallStreetBets discussion
+dfWSB = quiver.wallstreetbets()
+
 #Get recent trades by members of U.S. Congress
 dfCongress = quiver.congress_trading()
 
@@ -41,9 +44,6 @@ dfCongress_Tesla = quiver.congress_trading("TSLA")
 
 #Get trades made by U.S. Senator Richard Burr
 dfCongress_Burr = quiver.congress_trading("Richard Burr", politician=True)
-
-#Get data on WallStreetBets discussion
-dfWSB = quiver.wallstreetbets()
 
 #Get data on WallStreetBets discussion of Virgin Galactic
 dfWSB_Virgin = quiver.wallstreetbets("SPCE")
