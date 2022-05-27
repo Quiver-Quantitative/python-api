@@ -3,8 +3,15 @@ This package allows you to access several alternative data sources which are upd
 - Trading by US congressmen
 - Corporate Lobbying
 - Government Contracts
+- Patents
+- Off-exchange short volume
 - Companies' Wikipedia page views
-- Discussion on Reddit's /r/WallStreetBets
+- Discussion on Reddit's r/wallstreetbets
+- Discussion on Reddit's r/SPACs
+- Companies' Twitter followings
+- Flights by corporate private jets
+- Political Beta
+- Insider Transactions
 
 This data can be used for backtesting and implementing trading strategies.
 
@@ -36,6 +43,9 @@ quiver = quiverquant.quiver("<TOKEN>")
 #Get data on WallStreetBets discussion
 dfWSB = quiver.wallstreetbets()
 
+#Get data on WallStreetBets discussion of GameStop
+dfWSB_GameStop = quiver.wallstreetbets("GME")
+
 #Get recent trades by members of U.S. Congress
 dfCongress = quiver.congress_trading()
 
@@ -44,9 +54,6 @@ dfCongress_Tesla = quiver.congress_trading("TSLA")
 
 #Get trades made by U.S. Senator Richard Burr
 dfCongress_Burr = quiver.congress_trading("Richard Burr", politician=True)
-
-#Get data on WallStreetBets discussion of Virgin Galactic
-dfWSB_Virgin = quiver.wallstreetbets("SPCE")
 
 #Get recent corporate lobbying
 dfLobbying = quiver.lobbying()
@@ -60,11 +67,44 @@ dfContracts = quiver.gov_contracts()
 #Get data on government contracts to Lockheed Martin
 dfContracts_Lockheed = quiver.gov_contracts("LMT")
 
+#Get data on off-exchange short volume
+dfOTC = quiver.offexchange()
+
+#Get data on off-exchange short volume for AMC
+dfOTC_AMC = quiver.offexchange("AMC")
+
 #Get data on Wikipedia page views
 dfWiki = quiver.wikipedia()
 
 #Get data on Wikipedia page views of Microsoft
 dfWiki_Microsoft = quiver.wikipedia("MSFT")
+
+#Get data on companies' Twitter following
+dfTwitter = quiver.twitter()
+
+#Get data on GE's Twitter following
+dfTwitter_GE = quiver.twitter("GE")
+
+#Get data on r/SPACs discussion
+dfSPACs = quiver.spacs()
+
+#Get data on r/SPACs discussion of CCIV
+dfSPACs_CCIV = quiver.spacs("CCIV")
+
+#Get data on recent corporate private jet flights
+dfFlights = quiver.flights()
+
+#Get data on private jet flights by Target
+dfFlights_Target = quiver.flights("TGT")
+
+#Get data on patents by Apple
+dfPatents_Apple = quiver.patents("AAPL")
+
+#Get data on recent insider transactions
+dfInsiders = quiver.insiders()
+
+#Get data on recent insider transactions by Tesla insiders
+dfInsiders_Tesla = quiver.insiders("TSLA")
 ```
 
 

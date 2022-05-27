@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="quiverquant",
-    version="0.1.6",
+    version="0.1.55",
     author="Chris Kardatzke",
     author_email="chris@quiverquant.com",
     description="Quiver Quantitative Alternative Data",
