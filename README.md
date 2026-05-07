@@ -3,22 +3,26 @@ This package allows you to access several alternative data sources which are upd
 - Trading by US congressmen
 - Corporate Lobbying
 - Government Contracts
+- Insider Transactions
+- Hedge Fund Moves
+- Executive Compensation
+- Corporate Election Donations
 - Patents
 - Off-exchange short volume
 - Companies' Wikipedia page views
 - Discussion on Reddit's r/wallstreetbets
-- Discussion on Reddit's r/SPACs
 - Companies' Twitter followings
 - Flights by corporate private jets
-- Political Beta
-- Insider Transactions
+
 
 This data can be used for backtesting and implementing trading strategies.
+
+You can find full documentation on the Quiver Quantitative API [here](https://api.quiverquant.com/docs/).
 
 ### Receiving API Token
 You can sign up for a Quiver API token [here](https://api.quiverquant.com). 
 
-The pricing starts at $10/month, please [e-mail me](mailto:chris@quiverquant.com) if that is an issue and I may be able to help cover.
+The pricing starts at $30/month, please [e-mail me](mailto:chris@quiverquant.com) if that is an issue and I may be able to help cover.
 
 ## Getting Started
 #### Prerequisites
@@ -40,11 +44,16 @@ import quiverquant
 #Replace <TOKEN> with your token
 quiver = quiverquant.quiver("<TOKEN>")
 
-#Get data on WallStreetBets discussion
-dfWSB = quiver.wallstreetbets()
 
-#Get data on WallStreetBets discussion of GameStop
-dfWSB_GameStop = quiver.wallstreetbets("GME")
+
+
+#Get the most recent stock news (across all tickers)
+dfNews = quiver.news()
+
+
+#Get the most recent Oracle stock news
+dfNews_oracle = quiver.news(ticker="ORCL")
+
 
 #Get recent trades by members of U.S. Congress
 dfCongress = quiver.congress_trading()
@@ -54,6 +63,30 @@ dfCongress_Tesla = quiver.congress_trading("TSLA")
 
 #Get trades made by U.S. Senator Richard Burr
 dfCongress_Burr = quiver.congress_trading("Richard Burr", politician=True)
+
+#Get data on recent insider transactions
+dfInsiders = quiver.insiders()
+
+#Get data on recent insider transactions by Tesla insiders
+dfInsiders_Tesla = quiver.insiders("TSLA")
+
+
+#Get data on recent hedge fund moves in Amazon
+df13F_Amazon = quiver.sec13FChanges(ticker="AMZN")
+
+#Get data on holdings in Situational Awareness' portfolio
+df13F_fund = quiver.sec13F(owner="Situational Awareness LP")
+
+
+#Get data on the top Walmart shareholders
+dfShareholders_Walmart = quiver.top_shareholders(ticker="WMT")
+
+#Get data on executive compensation at Nvidia
+dfCompensation_Nvidia = quiver.executive_compensation(ticker='NVDA')
+
+#Get data on election donations by Chevron
+dfDonations_Chevron = quiver.corporate_donors(ticker="CVX")
+
 
 #Get recent corporate lobbying
 dfLobbying = quiver.lobbying()
@@ -79,32 +112,11 @@ dfWiki = quiver.wikipedia()
 #Get data on Wikipedia page views of Microsoft
 dfWiki_Microsoft = quiver.wikipedia("MSFT")
 
-#Get data on companies' Twitter following
-dfTwitter = quiver.twitter()
-
-#Get data on GE's Twitter following
-dfTwitter_GE = quiver.twitter("GE")
-
-#Get data on r/SPACs discussion
-dfSPACs = quiver.spacs()
-
-#Get data on r/SPACs discussion of CCIV
-dfSPACs_CCIV = quiver.spacs("CCIV")
-
-#Get data on recent corporate private jet flights
-dfFlights = quiver.flights()
-
-#Get data on private jet flights by Target
-dfFlights_Target = quiver.flights("TGT")
 
 #Get data on patents by Apple
 dfPatents_Apple = quiver.patents("AAPL")
 
-#Get data on recent insider transactions
-dfInsiders = quiver.insiders()
 
-#Get data on recent insider transactions by Tesla insiders
-dfInsiders_Tesla = quiver.insiders("TSLA")
 ```
 
 

@@ -19,6 +19,7 @@ class quiver:
             url = urlStart+"?representative="+ticker
             
         elif len(ticker)>0:
+            urlStart = 'https://api.quiverquant.com/beta/historical/congresstrading'
             url = urlStart+"/"+ticker
         else:
             url = urlStart
@@ -26,8 +27,16 @@ class quiver:
         r = requests.get(url, headers=self.headers)
         j = json.loads(r.content)
         df = pd.DataFrame(j)
-        df["ReportDate"] = pd.to_datetime(df["ReportDate"])
-        df["TransactionDate"] = pd.to_datetime(df["TransactionDate"])
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        
+        for col in ['ReportDate', 'TransactionDate', 'Filed', 'Traded', 'last_modified']:
+            try:
+                df[col] = pd.to_datetime(df[col])
+            except:
+                continue
+
         return df
    
 
@@ -39,6 +48,9 @@ class quiver:
         r = requests.get(url, headers=self.headers)
         j = json.loads(r.content)
         df = pd.DataFrame(j)
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         df["Date"] = pd.to_datetime(df["Date"])
         return df
 
@@ -50,6 +62,9 @@ class quiver:
         r = requests.get(url, headers=self.headers)
         j = json.loads(r.content)
         df = pd.DataFrame(j)
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         df["Date"] = pd.to_datetime(df["Date"])
         return df    
     
@@ -61,7 +76,9 @@ class quiver:
         r = requests.get(url, headers=self.headers)
         j = json.loads(r.content)
         df = pd.DataFrame(j)
-        
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         if len(ticker)>0:
             df["Date"] = pd.to_datetime(df["Date"])
             
@@ -75,6 +92,9 @@ class quiver:
 
         r = requests.get(url, headers=self.headers)
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         return df
 
     
@@ -86,6 +106,9 @@ class quiver:
 
         r = requests.get(url, headers=self.headers)
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         df["Date"] = pd.to_datetime(df["Date"])
         return df
         
@@ -98,6 +121,9 @@ class quiver:
         print("Drawing from: ", url)
         r = requests.get(url, headers=self.headers)
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
        # df["Date"] = pd.to_datetime(df["Date"])
         return df     
             
@@ -115,7 +141,101 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         return df
+    
+    
+    
+    
+    def news(self, ticker="", page_size="", page=""):
+        payload = {
+            "ticker": ticker,
+            "page_size": page_size,
+            "page": page
+        }
+
+        payload = {k: v for k, v in payload.items() if v != ""}
+
+        url = "https://api.quiverquant.com/beta/live/quivernews"
+        r = requests.get(url, headers=self.headers, params=payload)
+        j = json.loads(r.content)['data']
+        df = pd.DataFrame(j)
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        try:
+            df['time'] = pd.to_datetime(df['time'])
+        except:
+            pass
+
+        return df
+    
+    
+    def top_shareholders(self, ticker):
+        url = "https://api.quiverquant.com/beta/live/topshareholders/"+ticker
+        print(url)
+
+        r = requests.get(url, headers=self.headers)
+        df = pd.DataFrame(json.loads(r.content)['ownership'])
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        return df
+    
+
+    
+    def executive_compensation(self, ticker, page_size="", page=""):
+        payload = {
+            "page_size": page_size,
+            "page": page
+        }
+
+        # Remove empty values
+        payload = {k: v for k, v in payload.items() if v != ""}
+
+        url = "https://api.quiverquant.com/beta/historical/executivecompensation/"+ticker
+        print(url)
+
+        r = requests.get(url, headers=self.headers, params=payload)
+        df = pd.DataFrame(json.loads(r.content)['data'])
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        return df
+    
+ 
+
+
+    def corporate_donors(self, ticker="", bioguide_id="", cycle="", transaction_tp="", page_size="", page=""):
+        payload = {
+            "ticker": ticker,
+            "bioguide_id": bioguide_id,
+            "cycle": cycle,
+            "transaction_tp": transaction_tp,
+            "page_size": page_size,
+            "page": page
+        }
+
+        payload = {k: v for k, v in payload.items() if v != ""}
+
+        url = "https://api.quiverquant.com/beta/bulk/corporatedonors"
+        r = requests.get(url, headers=self.headers, params=payload)
+
+        j = json.loads(r.content)['data']
+        df = pd.DataFrame(j)
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        try:
+            df['Uploaded'] = pd.to_datetime(df['Uploaded'])
+            df['TransactionDate'] = pd.to_datetime(df['TransactionDate'])
+        except:
+            pass
+
+        return df
+    
     
     def wallstreetbets(self, ticker="",date_from = "", date_to = "", yesterday=False):
         if len(ticker)>0:
@@ -140,7 +260,10 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
 
         df = pd.DataFrame(json.loads(r.content))
-
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        
         if not yesterday:
             try:
                 df["Date"] = pd.to_datetime(df["Time"], unit='ms')
@@ -165,6 +288,9 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         return df 
     
     def spacs(self, ticker = ""):
@@ -179,6 +305,9 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         return df 
     
     def flights(self, ticker = ""):
@@ -193,6 +322,9 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         return df 
         
         
@@ -208,6 +340,9 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         return df 
     
     def patents(self, ticker = ""):
@@ -223,6 +358,9 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
         
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         df["Date"] = pd.to_datetime(df["Date"])
         
         return df
@@ -251,23 +389,11 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
-        df["ReportPeriod"] = pd.to_datetime(df["ReportPeriod"], unit='ms')
-#         #Can edit this out once we get past May 25th
-#         values = []
-#         for val in df["Value"]:
-#             if len(val)>=900:
-#                 values.append(val[:len(val)//1000])
-#             else:
-#                 values.append(val)
-#         df["Value"] = values
-        ########
-        
-#         df["Value"] = df["Value"].str.replace(",", "")
-#         df["Value"] = df["Value"].astype(float)
-        
-#         df["Shares"] = df["Shares"].str.replace(",", "")
-#         df["Shares"] = df["Shares"].astype(float)
-        df["Date"] = pd.to_datetime(df["Date"], unit="ms")       
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        df["ReportPeriod"] = pd.to_datetime(df["ReportPeriod"])
+        df["Date"] = pd.to_datetime(df["Date"])       
         return df
     
     def sec13FChanges(self, ticker="", date="", owner="", period=""):
@@ -293,23 +419,12 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset.')
             
         df = pd.DataFrame(json.loads(r.content))
-        df["ReportPeriod"] = pd.to_datetime(df["ReportPeriod"], unit='ms')
-#         #Can edit this out once we get past May 25th
-#         values = []
-#         for val in df["Value"]:
-#             if len(val)>=900:
-#                 values.append(val[:len(val)//1000])
-#             else:
-#                 values.append(val)
-#         df["Value"] = values
-        ########
-        
-#         df["Value"] = df["Value"].str.replace(",", "")
-#         df["Value"] = df["Value"].astype(float)
-        
-#         df["Shares"] = df["Shares"].str.replace(",", "")
-#         df["Shares"] = df["Shares"].astype(float)
-        df["Date"] = pd.to_datetime(df["Date"], unit="ms")       
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        df["ReportPeriod"] = pd.to_datetime(df["ReportPeriod"])
+
+        df["Date"] = pd.to_datetime(df["Date"])       
         return df    
     
     def wallstreetbetsComments(self, ticker="", freq="", date_from = "", date_to = ""):
@@ -335,7 +450,10 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset. Contact chris@quiverquant.com with questions.')
             
         df = pd.DataFrame(json.loads(r.content))
-        df['Datetime'] = pd.to_datetime(df["Time"], unit='ms')
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
+        #df['Datetime'] = pd.to_datetime(df["Time"], unit='ms')
         return df 
     
     def wallstreetbetsCommentsFull(self, ticker="", freq="", date_from = "", date_to = ""):
@@ -361,6 +479,9 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset. Contact chris@quiverquant.com with questions.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         df['Datetime'] = pd.to_datetime(df["Time"], unit='ms')
         return df 
     
@@ -388,6 +509,9 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset. Contact chris@quiverquant.com with questions.')
             
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         df['Datetime'] = pd.to_datetime(df["Time"], unit='ms')
         return df 
     
@@ -414,8 +538,8 @@ class quiver:
             raise NameError('Upgrade your subscription plan to access this dataset. Contact chris@quiverquant.com with questions.')
 
         df = pd.DataFrame(json.loads(r.content))
+        if (len(df)==0) or (df.shape[0]==0):
+            print("No results found")
+            return df
         df['Datetime'] = pd.to_datetime(df["Time"], unit='ms')
         return df 
-
-
-  
